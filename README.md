@@ -99,7 +99,7 @@ Examples for these franeworks are:
 - Enyo
 - iUI
 
-There are also frameworks that let you build the app once, and then create different "native" apps.  
+There are also frameworks that let you build the app once, and then create ***native apps*** for all platforms.  
 
 Examples are:
 
@@ -115,3 +115,19 @@ Examples are:
 - [Twitter](https://mobile.twitter.com/home)
 - [Guitar Tuner](https://guitar-tuner.appspot.com/)
 - [Air Horner](https://airhorner.com/)
+
+Go ahead and try them out!
+
+## The Development Cycle
+
+The typical lifecycle for a bug-fix goes like this:
+
+1. There is a new app version released.
+2. A bug is reported.
+3. The developer fixes that bug.
+4. A fellow developer does a ***code review***.
+5. The system builds a ***snapshot***.
+6. QA tests it.
+7. A new app version is released.
+
+
