@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.maps.MapView;
 
+import net.hockeyapp.android.CrashManager;
+import net.hockeyapp.android.UpdateManager;
+
 public class MainActivity extends AppCompatActivity {
 
     private MapView mapView;
@@ -17,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
+        checkForUpdates();
     }
 
     @Override
@@ -29,12 +33,14 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         mapView.onResume();
+        checkForCrashes();
     }
 
     @Override
     public void onPause() {
         super.onPause();
         mapView.onPause();
+        unregisterManagers();
     }
 
     @Override
@@ -53,11 +59,25 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mapView.onDestroy();
+        unregisterManagers();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mapView.onSaveInstanceState(outState);
+    }
+
+    private void checkForCrashes() {
+        CrashManager.register(this);
+    }
+
+    private void checkForUpdates() {
+        // Remove this for store builds!
+        UpdateManager.register(this);
+    }
+
+    private void unregisterManagers() {
+        UpdateManager.unregister();
     }
 }
