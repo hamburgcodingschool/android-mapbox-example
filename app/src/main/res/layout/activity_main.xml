@@ -4,13 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     tools:context="com.hamburgcodingschool.example.mapbox.MainActivity">
 
     <com.mapbox.mapboxsdk.maps.MapView
         android:id="@+id/mapView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         mapbox:mapbox_cameraTargetLat="48.775846"
         mapbox:mapbox_cameraTargetLng="9.182932"
         mapbox:mapbox_styleUrl="@string/mapbox_style_light"
@@ -18,4 +20,9 @@
         mapbox:mapbox_cameraZoom="12"
         />
 
+    <Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button"/>
 </LinearLayout>

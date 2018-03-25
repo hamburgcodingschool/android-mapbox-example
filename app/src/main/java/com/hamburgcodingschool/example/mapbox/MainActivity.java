@@ -1,8 +1,12 @@
 package com.hamburgcodingschool.example.mapbox;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.mapbox.mapboxsdk.Mapbox;
@@ -18,9 +22,12 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+
+    public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
     private MapView mapView;
+    private MapboxMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
-                // One way to add a marker view
+                map = mapboxMap;
                 mapboxMap.addMarker(new MarkerOptions()
                         .position(new LatLng(48.775846,9.182932))
                         .title("Stuttgart")
@@ -55,6 +62,15 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+                if (ContextCompat.checkSelfPermission(MainActivity.this,
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    mapboxMap.setMyLocationEnabled(true);
+                } else {
+                    //Request Location Permission
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            MY_PERMISSIONS_REQUEST_LOCATION);
+                }
             }
         });
     }
@@ -115,5 +131,19 @@ public class MainActivity extends AppCompatActivity {
 
     private void unregisterManagers() {
         UpdateManager.unregister();
+    }
+
+    @SuppressWarnings("MissingPermission")
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+            if (permissions.length == 1 &&
+                    Manifest.permission.ACCESS_FINE_LOCATION.equals(permissions[0]) &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                map.setMyLocationEnabled(true);
+            }
+        }
     }
 }

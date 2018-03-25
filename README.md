@@ -494,6 +494,102 @@ We explain all you need to know in this workshop.
 Read more about sharing content in Android here:  
 https://developer.android.com/training/sharing/send.html
 
+#### Show the Phone's Location
 
+At the end of the method `onMapReady()`, switch on the maps blue icon for the location:
+
+```java
+mapboxMap.setMyLocationEnabled(true);
+```
+
+This won't work yet, because of Android's location permissions. This permission needs to be granted by the user first.
+
+Add the following code for checking the location permission:
+
+```java
+if (ContextCompat.checkSelfPermission(MainActivity.this,
+        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+    mapboxMap.setMyLocationEnabled(true);
+} else {
+    //Request Location Permission
+    ActivityCompat.requestPermissions(MainActivity.this,
+            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+            MY_PERMISSIONS_REQUEST_LOCATION);
+}
+```
+
+The variable `MY_PERMISSIONS_REQUEST_LOCATION` is marked red, because it's not there yet. We need to add it to the beginning of the class:
+
+```java
+public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
+```
+
+This is showing a dialog to the user that asks whether or not the app is allowed to use the phone's location.
+
+We also need to react to the decision of the user: it's called a "Callback".
+
+Directly at the beginning of the class, after `AppCompatActivity`, make a space and add this:  
+`implements ActivityCompat.OnRequestPermissionsResultCallback`.
+
+Add a new line directly after `private MapView mapView;` and add:
+```java
+private MapboxMap map;
+```
+
+Then, at the beginning of the `onMapReady()` method, on the first line after {, add:
+```java
+map = mapboxMap;
+```
+
+At the end of the class, just before the last `}`, put the following code:
+
+```java
+@SuppressWarnings("MissingPermission")
+@Override
+public void onRequestPermissionsResult(int requestCode, 
+                                       @NonNull String[] permissions, 
+                                       @NonNull int[] grantResults) {
+    if (requestCode == MY_PERMISSIONS_REQUEST_LOCATION) {
+        if (permissions.length == 1 &&
+                Manifest.permission.ACCESS_FINE_LOCATION.equals(permissions[0]) &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        }
+    }
+}
+```
+
+Now, if you start your app, you get a dialog asking you to grant permission to use the location.  
+
+You should now see a little blue dot at your location.
+
+#### Create a Button
+
+Open the file `activity_main.xml`. We need to change the layout so that it shows a button.
+
+Inside the `<LinearLayout` e.g. in line 7 add:  
+`android:orientation="vertical"`
+
+In the `<com.mapbox.mapboxsdk.maps.MapView` replace line  
+`android:layout_height="match_parent"`
+with
+```xml
+android:layout_height="0dp"
+android:layout_weight="1"
+```
+
+Almost at the bottom, create a new line above `</LinearLayout>` and add a button:
+```xml
+<Button
+        android:id="@+id/button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button"/>
+```
+
+Try changing the label text to `Share My Location`.
+
+Run your app and see how the layout changed.  
+The button is not doing anything yet when it's clicked.
 
 
