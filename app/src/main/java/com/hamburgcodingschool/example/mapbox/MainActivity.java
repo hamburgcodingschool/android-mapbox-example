@@ -1,9 +1,14 @@
 package com.hamburgcodingschool.example.mapbox;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         checkForUpdates();
+        final Icon icon = IconFactory.getInstance(MainActivity.this).fromResource(R.drawable.ic_directions_car);
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(MapboxMap mapboxMap) {
@@ -33,7 +39,22 @@ public class MainActivity extends AppCompatActivity {
                         .position(new LatLng(48.775846,9.182932))
                         .title("Stuttgart")
                         .snippet("Baden-Württemberg")
+                        .icon(icon)
                 );
+                mapboxMap.setOnInfoWindowClickListener(new MapboxMap.OnInfoWindowClickListener() {
+                    @Override
+                    public boolean onInfoWindowClick(@NonNull Marker marker) {
+                        LatLng position = marker.getPosition();
+                        String location = "https://www.google.com/maps?ll=" + position.getLatitude() + ","
+                                + position.getLongitude() + "&q=" + position.getLatitude() + ","
+                                + position.getLongitude();
+                        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                        sendIntent.putExtra(Intent.EXTRA_TEXT, location);
+                        sendIntent.setType("text/plain");
+                        startActivity(Intent.createChooser(sendIntent, "Send location"));
+                        return true;
+                    }
+                });
             }
         });
     }

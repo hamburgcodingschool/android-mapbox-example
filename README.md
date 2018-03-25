@@ -429,4 +429,71 @@ Run the app and see if your marker is at your new location now.
 
 Can you also change the text of the snippet?
 
+#### Change the Marker Icon
+
+In your Android Studio project, navigate to the res folder.  
+Create all the drawable-... folders there that you see at https://github.com/hamburgcodingschool/android-mapbox-example/tree/master/app/src/main/res.
+
+From each of these folders, download the ic_directions_car.png file and put them at the same folder in your project.
+
+At line 27, just before `mapView.getMapAsync(new OnMapReadyCallback() {`, paste the following line:
+```java
+final Icon icon = IconFactory.getInstance(MainActivity.this).fromResource(R.drawable.ic_directions_car);
+```
+Then, one line below `.snippet("Baden-Württemberg")`, add:
+```java
+.icon(icon)
+```
+Run your app and see how it looks.
+
+If you want to create your own icons, you can use the Android Asset Studio:
+https://romannurik.github.io/AndroidAssetStudio/index.html
+
+#### Share your Location
+
+For listening to clicks on the info window (the text shown when a marker is clicked), we need to create a listener like this:  
+```java
+mapboxMap.setOnInfoWindowClickListener(new MapboxMap.OnInfoWindowClickListener() {
+    @Override
+    public boolean onInfoWindowClick(@NonNull Marker marker) {
+        
+    }
+});
+```
+
+This needs to be added in a new line just below
+```java
+    .icon(icon)
+);
+```
+but before the closing } of `public void onMapReady(MapboxMap mapboxMap) {`.
+
+Next, we need to fill in some logic, so that it looks like this:
+```java
+mapboxMap.setOnInfoWindowClickListener(new MapboxMap.OnInfoWindowClickListener() {
+    @Override
+    public boolean onInfoWindowClick(@NonNull Marker marker) {
+        LatLng position = marker.getPosition();
+        String location = "https://www.google.com/maps?ll=" + position.getLatitude() + ","
+                + position.getLongitude() + "&q=" + position.getLatitude() + ","
+                + position.getLongitude();
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, location);
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, "Send location"));
+        return true;
+    }
+});
+```
+Run your app and share the location of your marker with someone! 
+
+Note: this may not work if no email or similar account is set up in your emulator.
+
+We explain all you need to know in this workshop.
+
+Read more about sharing content in Android here:  
+https://developer.android.com/training/sharing/send.html
+
+
+
 
