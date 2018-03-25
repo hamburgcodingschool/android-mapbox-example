@@ -6,8 +6,8 @@ android {
         applicationId "com.hamburgcodingschool.example.mapbox"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         manifestPlaceholders = [HOCKEYAPP_APP_ID: "0fbe975a07414e75bd73739792e7a27b"]
     }
