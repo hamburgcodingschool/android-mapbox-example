@@ -1,6 +1,6 @@
 # MapBox Example
 
-Example Android project for a workshop about MapBox.
+Example Android project for a workshop that teaches Android app development.
 
 ## App Development
 
@@ -129,6 +129,81 @@ The typical lifecycle for a bug-fix goes like this:
 5. The system builds a ***snapshot***.
 6. QA tests it.
 7. A new app version is released.
+
+### Beta Release
+
+There are several services that you can use to distribute an app to a selected circle of testers.
+For this example we chose [HockeyApp](https://hockeyapp.net).
+
+See: https://rink.hockeyapp.net/manage/apps/734868
+
+Alternatives include:
+
+- Crashlytics Beta
+- TestFlight (iOS)
+- DryDock (iOS)
+- Google Play Store: Beta Testing (Android)
+
+### Typical Team
+
+In bigger companies, you would usually have a team that consists of:
+
+- PO: Product Owner
+- Designer
+- QA: Quality Assurance
+- Backend developers
+- Android developers
+- iOS developers
+- (DevOps and/or IT)
+
+### Scrum Board
+
+Usually, a software development team has a board that helps them doing their agile process (Scrum, Kanban).
+This usually contains:
+ 
+- a ***backlog*** where all open tickets are collected and sorted by priority
+- a ***sprint board*** or ***scrum board*** whith columns like *OPEN*, *IN PROGRESS*, *IN REVIEW*, and *DONE*
+- a ***burndown chart***, where the progress of a sprint is visualized
+
+A ***sprint*** is a time span of usually 2 weeks, where developers focus on solving a certain amount of issues from the backlog.
+
+### Code Review
+
+After a developer implemented a new feature or fixed a bug, another developer will have a look at the code and double-check that everything is fine: the ***code review***.
+
+Usually, developers use a software for *version control*, so they can keep track of the changes or revert changes.
+
+One of the most common version control tools is ***git***.
+
+If a developer made changes to the code, they can ***add*** these changes, and then ***commit*** them with a commit message.
+
+***GitHub*** is an online platform where developers can push their commits to. An example is this project here.  
+Have a look at the [commit history](https://github.com/hamburgcodingschool/android-mapbox-example/commits/master).
+
+If a developer starts working on a project, they usually check out a new ***branch***. This way, multiple developers can work on the same project in parallel.
+
+Many teams use this branching model:  
+http://nvie.com/posts/a-successful-git-branching-model/
+
+When a developer finished a feature or bugfix, they need to merge their branch back into the master branch.
+On GitHub this is done with a ***pull request***.
+
+When a pull request is open, the other developers can easily check the changes for errors or weaknesses.
+
+### Continuous Integration
+
+A continuous integration (CI) system can automatically:
+
+- run unit tests
+- run code quality tools, e.g. lint
+- upload a new snapshot version
+- upload a new release version
+
+Examples for these systems are:
+
+- TeamCity
+- Travis
+- Jenkins
 
 ## Mapbox Example
 
