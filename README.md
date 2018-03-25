@@ -130,4 +130,125 @@ The typical lifecycle for a bug-fix goes like this:
 6. QA tests it.
 7. A new app version is released.
 
+## Mapbox Example
+
+MapBox first steps:  
+https://www.mapbox.com/help/first-steps-android-sdk/
+
+#### The MapBox Key
+
+First we need an access token. I prepared one for you on the USB drive that you got.
+
+Open the `key.txt` file on your USB drive and copy the key.
+
+In your project, go to `res/values`. Right click the `values` folder, and choose `New...` - `Values resource file`. 
+
+At file name type `keys.xml` and press `OK`.
+
+Open the file, and between the `<resources>` tags, in a new line, type:
+```xml
+<string name="mapbox_key"></string>
+```
+Then, in between the `>` and the `</string>`, paste your key.
+
+#### Adding MapBox to the project
+
+In `build.gradle` (Project: ...) in line 22, below `jcenter()`, add: 
+```
+mavenCentral()
+```
+In `app/build.gradle` (Module: app) below line 24 add:
+```
+implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:5.5.0'
+```
+Build the project.
+
+#### Displaying a map
+
+In `activity_main.xml` replace existing code with the following content:
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+    tools:context="com.hamburgcodingschool.example.mapbox.MainActivity">
+
+    <com.mapbox.mapboxsdk.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        mapbox:mapbox_cameraTargetLat="41.885"
+        mapbox:mapbox_cameraTargetLng="-87.679"
+        mapbox:mapbox_styleUrl="@string/mapbox_style_light"
+        mapbox:mapbox_cameraTilt="60"
+        mapbox:mapbox_cameraZoom="12"
+        />
+
+</LinearLayout>
+```
+
+At `AndroidManifest.xml` add the following content at line 4:
+```xml
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+```
+
+In `MainActivity.java` in line 7 after the first { put this:
+```java
+private MapView mapView;
+```
+Replace the code that says `setContentView(R.layout.activity_main);` with this:
+```java
+Mapbox.getInstance(this, getString(R.string.mapbox_key));
+setContentView(R.layout.activity_main);
+mapView = (MapView) findViewById(R.id.mapView);
+mapView.onCreate(savedInstanceState);
+```
+
+After line 20, before the last }, paste the following methods:
+```java
+@Override
+public void onStart() {
+    super.onStart();
+    mapView.onStart();
+}
+ 
+@Override
+public void onResume() {
+    super.onResume();
+    mapView.onResume();
+}
+ 
+@Override
+public void onPause() {
+    super.onPause();
+    mapView.onPause();
+}
+ 
+@Override
+public void onStop() {
+    super.onStop();
+    mapView.onStop();
+}
+ 
+@Override
+public void onLowMemory() {
+    super.onLowMemory();
+    mapView.onLowMemory();
+}
+ 
+@Override
+protected void onDestroy() {
+    super.onDestroy();
+    mapView.onDestroy();
+}
+ 
+@Override
+protected void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
+    mapView.onSaveInstanceState(outState);
+}
+```
 
