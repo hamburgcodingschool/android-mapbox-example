@@ -3,12 +3,18 @@ package com.hamburgcodingschool.example.mapbox;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.annotations.IconFactory;
@@ -29,6 +35,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private MapView mapView;
     private MapboxMap map;
 
+    private FusedLocationProviderClient fusedLocationClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             public void onMapReady(MapboxMap mapboxMap) {
                 map = mapboxMap;
                 mapboxMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(48.775846,9.182932))
+                        .position(new LatLng(48.775846, 9.182932))
                         .title("Stuttgart")
                         .snippet("Baden-Württemberg")
                         .icon(icon)
@@ -71,6 +79,16 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                             new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                             MY_PERMISSIONS_REQUEST_LOCATION);
                 }
+            }
+        });
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareLocation();
             }
         });
     }
@@ -145,5 +163,28 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                 map.setMyLocationEnabled(true);
             }
         }
+    }
+
+    private void shareLocation() {
+        if (ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            String locationUrl = "https://www.google.com/maps?ll="
+                                    + location.getLatitude() + "," + location.getLongitude()
+                                    + "&q=" + location.getLatitude() + "," + location.getLongitude();
+                            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+                            sendIntent.putExtra(Intent.EXTRA_TEXT, locationUrl);
+                            sendIntent.setType("text/plain");
+                            startActivity(Intent.createChooser(sendIntent, "Send location"));
+                        }
+                    }
+                });
     }
 }
