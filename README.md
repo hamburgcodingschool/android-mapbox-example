@@ -210,13 +210,66 @@ Examples for these systems are:
 MapBox first steps:  
 https://www.mapbox.com/help/first-steps-android-sdk/
 
-#### The MapBox Key
+### What do you need to get started?
 
-First we need an access token. I prepared one for you on the USB drive that you got.
+- Your laptop
+- An internet connection
+- Android Studio
+- An Android phone (optional)
+
+### Setting up Android Studio
+
+Download Android Studio here:  
+https://developer.android.com/studio/index.html
+
+Install Android Studio. If it asks you to install Java, install it, too.
+
+Open Android Studio. Follow the instructions and install at least one SDK.
+
+### Create your first App
+
+Open Android Studio and select "Start a new Android Studio project".
+
+Give it a name (e.g. "MapBox Example").
+
+As company domain, use the following pattern:
+
+```
+firstnamelastname.com
+```
+So if your name would be Lisa Simpson, this would be:
+```
+lisasimpson.com
+```
+
+Press next, choose "Phone and Tablet", press next.
+
+Select "Empty Activity", press next and finish.
+
+### Start Your App
+
+Click "AVD Manager" and "Create virtual device...".  
+Select “Phone” and choose one (e.g. Pixel). Click next.
+
+For the system image, choose the first one, click "Download", and once it's downloaded, press Finish. Your device will now be listed in the list of emulators.  
+Click the "run" button and wait until it started.
+
+In Android Studio, press the green "play" icon. It starts up your app in the emulator.
+
+Alternatively, you can connect your Android phone with a USB cable and choose that.  
+For this, you have to enable USB debugging in your phone's settings.
+
+### Add MapBox to Your App
+
+#### Add the MapBox Access Token
+
+MapBox doesn't show a map if we don't use a key: the ***MapBox access token***. For using their SDK, they want you to register an account.
+
+I did that already, and prepared an access token for you on the USB drive that you got.
 
 Open the `key.txt` file on your USB drive and copy the key.
 
-In your project, go to `res/values`. Right click the `values` folder, and choose `New...` - `Values resource file`. 
+In your project, go to `res/values`. Right click the `values` folder and choose `New...` - `Values resource file`. 
 
 At file name type `keys.xml` and press `OK`.
 
@@ -228,6 +281,8 @@ Then, in between the `>` and the `</string>`, paste your key.
 
 #### Adding MapBox to the project
 
+For downloading external dependencies (like the MapBox SDK), in Android we use Gradle,
+
 In `build.gradle` (Project: ...) in line 22, below `jcenter()`, add: 
 ```
 mavenCentral()
@@ -236,7 +291,8 @@ In `app/build.gradle` (Module: app) below line 24 add:
 ```
 implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:5.5.0'
 ```
-Build the project.
+Build the project.  
+This will download the MapBox SDK library that contains everything we need.
 
 #### Displaying a map
 
@@ -326,4 +382,51 @@ protected void onSaveInstanceState(Bundle outState) {
     mapView.onSaveInstanceState(outState);
 }
 ```
+
+#### Add a Marker and an Info Window
+
+In the method `protected void onCreate(Bundle savedInstanceState)` after the last statement but before the closing }, paste this code:
+```java
+mapView.getMapAsync(new OnMapReadyCallback() {
+    @Override
+    public void onMapReady(MapboxMap mapboxMap) {
+        // One way to add a marker view
+        mapboxMap.addMarker(new MarkerOptions()
+            .position(new LatLng(41.885,-87.679))
+            .title("Chicago")
+            .snippet("Illinois")
+        );
+    }
+});
+```
+
+Run your app and see what happens when you tap the marker.
+
+#### Change the Camera Position
+
+As you have noticed, when the app starts, MapBox will always show Chicago first.  
+We can change that with the following steps:  
+
+First, we need to find latitude and longitude of the location that we want to show first.  
+For finding out longitude and latitude of places, go to http://www.latlong.net/.  
+
+Find the latitude and longitude of, for example, Stuttgart.
+
+Go to the file `activity_main.xml`. In line 14 and 15 you see that there are some latitude and longitude values given:
+```xml
+mapbox:mapbox_cameraTargetLat="41.885"
+mapbox:mapbox_cameraTargetLng="-87.679"
+```
+Replace the numbers with the latitude and longitude of your city.
+
+#### Change the Location of the Marker
+
+Go to `MainActivity.java` and find the line `.position(new LatLng(41.885,-87.679))` in the code that you just pasted.
+
+There, replace the numbers with the latitude and longitude of your city.
+
+Run the app and see if your marker is at your new location now.
+
+Can you also change the text of the snippet?
+
 

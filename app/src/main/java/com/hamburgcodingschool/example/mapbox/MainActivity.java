@@ -4,7 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.MarkerOptions;
+import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.maps.MapView;
+import com.mapbox.mapboxsdk.maps.MapboxMap;
+import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 
 import net.hockeyapp.android.CrashManager;
 import net.hockeyapp.android.UpdateManager;
@@ -21,6 +25,17 @@ public class MainActivity extends AppCompatActivity {
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         checkForUpdates();
+        mapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(MapboxMap mapboxMap) {
+                // One way to add a marker view
+                mapboxMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(48.775846,9.182932))
+                        .title("Stuttgart")
+                        .snippet("Baden-Württemberg")
+                );
+            }
+        });
     }
 
     @Override
